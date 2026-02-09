@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roulette</title>
+    <link rel="stylesheet" href="style2.css">
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        function Roulette() {
+            const [cards, setCards] = useState(['', '', '']);
+            const [isSpinning, setIsSpinning] = useState(false);
+            const [result, setResult] = useState('');
+            const emojis = ['♚', '♛', '♜', '♝', '♞', '♟'];
+
+            const handleSpin = () => {
+                setIsSpinning(true);
+                setResult('');
+
+                setTimeout(() => {
+                    const newCards = cards.map(() => {
+                        const randomIndex = Math.floor(Math.random() * emojis.length);
+                        return emojis[randomIndex];
+                    });
+                    setCards(newCards);
+                    setIsSpinning(false);
+
+                    if (newCards[0] === newCards[1] && newCards[1] === newCards[2]) {
+                        setResult('JACKPOT!');
+                    } else {
+                        setResult('YOU LOSE');
+                    }
+                }, 1000);
+            };
+
+            return (
+                <div className="view-container">
+                    <div className="roulette-section">
+                        <div className="roulette-cards">
+                            {cards.map((emoji, index) => (
+                                <div key={index} className={`roulette-card ${isSpinning ? 'spinning' : ''}`}>
+                                    {emoji || '?'}
+                                </div>
+                            ))}
+                        </div>
+                        {result && (
+                            <div className={`roulette-result ${result.includes('JACKPOT') ? 'jackpot' : 'fail'}`}>
+                                {result}
+                            </div>
+                        )}
+                        <button 
+                            className="roulette-spin-button" 
+                            onClick={handleSpin}
+                            disabled={isSpinning}
+                        >
+                            {isSpinning ? '돌리는 중 . . .' : '룰렛 돌리기'}
+                        </button>
+                    </div>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<Roulette />);
+    </script>
+</body>
+</html>
